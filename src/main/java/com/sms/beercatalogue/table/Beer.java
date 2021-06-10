@@ -1,28 +1,38 @@
-package com.sms.beercatalogue.document;
+package com.sms.beercatalogue.table;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Data
-@Document
+@NoArgsConstructor
+@Entity
+@Table(name= "beer")
 public class Beer {
 
     @Id
-    private String id;
-    @Indexed(unique = true)
+    @SequenceGenerator(
+            name = "beer_sequence",
+            sequenceName = "beer_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "beer_sequence"
+    )
+    private Long id;
     private String beerName;
     private String graduation;
     private String type;
     private String description;
-    private Manufacturer manufacturer;
+    private Long manufacturer;
 
     public Beer(String beerName,
                 String graduation,
                 String type,
                 String description,
-                Manufacturer manufacturer) {
+                Long manufacturer) {
         this.beerName = beerName;
         this.graduation = graduation;
         this.type = type;

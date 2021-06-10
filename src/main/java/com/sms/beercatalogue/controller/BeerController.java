@@ -1,6 +1,7 @@
 package com.sms.beercatalogue.controller;
 
-import com.sms.beercatalogue.document.Beer;
+import com.sms.beercatalogue.model.BeerBean;
+import com.sms.beercatalogue.table.Beer;
 import com.sms.beercatalogue.service.BeerService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class BeerController {
     private final BeerService beerService;
 
     @GetMapping
-    public List<Beer> fetchAllBeers(){
+    public List<BeerBean> fetchAllBeers(){
         return beerService.getAllBeers();
     }
 

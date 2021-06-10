@@ -1,23 +1,45 @@
 package com.sms.beercatalogue.service;
 
-import com.sms.beercatalogue.document.Beer;
+import com.sms.beercatalogue.model.BeerBean;
+import com.sms.beercatalogue.model.ManufacturerBean;
+import com.sms.beercatalogue.table.Beer;
 import com.sms.beercatalogue.repository.BeerRepository;
+import com.sms.beercatalogue.table.Manufacturer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
 public class BeerService {
 
     private final BeerRepository repository;
-    public List<Beer> getAllBeers(){
-        return repository.findAll();
+    private final ManufacturerService manufacturerService;
+
+    public List<BeerBean> getAllBeers(){
+        List<Beer> beers = repository.findAll();
+        List<Manufacturer> manufacturers = manufacturerService.getAllManufacturers();
+        List<BeerBean> beersOutput = new ArrayList<>();
+        for (Beer beerSQL: beers){
+            BeerBean beer = new BeerBean();
+            beer.setId(beerSQL.getId());
+            beer.setBeerName(beerSQL.getBeerName());
+            beer.setGraduation(beerSQL.getGraduation());
+            beer.setType(beerSQL.getType());
+            beer.setDescription(beerSQL.getDescription());
+            ManufacturerBean manufacturer = new ManufacturerBean();
+            Optional<Manufacturer> manu = manufacturers.stream().filter(m -> m.getId() == beerSQL.getManufacturer()).findFirst();
+            if(manu.isPresent()){
+                manufacturer.setName(manu.get().getName());
+                manufacturer.setNationality(manu.get().getNationality());
+                beer.setManufacturer(manufacturer);
+            }
+            beersOutput.add(beer);
+        }
+
+        return beersOutput;
     }
 
     public void addingBeer(Beer beer){
@@ -25,13 +47,13 @@ public class BeerService {
         if(beerExist.isPresent()){
             throw new IllegalStateException("Beer " + beer.getBeerName() + " already exists.");
         }
-        repository.insert(beer);
+        repository.save(beer);
     }
 
     public void deleteBeer(String beerName) {
         Optional<Beer> beer = repository.findBeerByBeerName(beerName);
         if(beer.isPresent()){
-            repository.deleteById(beer.get().getId());
+            repository.deleteById(beer.get().getId().toString());
         }else{
             throw new IllegalStateException("Beer " + beerName + " does not exists.");
         }
@@ -56,16 +78,7 @@ public class BeerService {
                 !Objects.equals(beer.getDescription(),beerNew.getDescription())){
             beer.setDescription(beerNew.getDescription());
         }
-        if(beerNew.getManufacturer() != null){
-            if(beerNew.getManufacturer().getName() != null && beerNew.getManufacturer().getName().length()>0 &&
-                    !Objects.equals(beer.getManufacturer().getName(),beerNew.getManufacturer().getName())){
-                beer.getManufacturer().setName(beerNew.getManufacturer().getName());
-            }
-            if(beerNew.getManufacturer().getNationality() != null && beerNew.getManufacturer().getNationality().length()>0 &&
-                    !Objects.equals(beer.getManufacturer().getNationality(),beerNew.getManufacturer().getNationality())){
-                beer.getManufacturer().setNationality(beerNew.getManufacturer().getNationality());
-            }
-        }
+
         repository.save(beer);
     }
 }

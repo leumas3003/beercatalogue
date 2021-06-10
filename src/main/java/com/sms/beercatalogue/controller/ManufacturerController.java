@@ -1,10 +1,8 @@
 package com.sms.beercatalogue.controller;
 
-import com.sms.beercatalogue.document.Beer;
-import com.sms.beercatalogue.document.Manufacturer;
+import com.sms.beercatalogue.table.Manufacturer;
 import com.sms.beercatalogue.service.ManufacturerService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

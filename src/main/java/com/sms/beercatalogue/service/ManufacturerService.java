@@ -1,6 +1,6 @@
 package com.sms.beercatalogue.service;
 
-import com.sms.beercatalogue.document.Manufacturer;
+import com.sms.beercatalogue.table.Manufacturer;
 import com.sms.beercatalogue.repository.ManufacturerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,13 +24,13 @@ public class ManufacturerService {
         if(manufacturerExists.isPresent()){
             throw new IllegalStateException("Manufacturer " + manufacturer.getName() + " already exists.");
         }
-        repository.insert(manufacturer);
+        repository.save(manufacturer);
     }
 
     public void deleteManufacturer(String name) {
         Optional<Manufacturer> manufacturerExists = repository.findManufacturerByName(name);
         if(manufacturerExists.isPresent()){
-            repository.deleteById(manufacturerExists.get().getId());
+            repository.deleteById(manufacturerExists.get().getId().toString());
         }else{
             throw new IllegalStateException("Manufacturer " + name + " does not exists.");
         }
