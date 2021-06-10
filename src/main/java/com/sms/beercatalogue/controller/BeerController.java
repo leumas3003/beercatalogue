@@ -3,9 +3,7 @@ package com.sms.beercatalogue.controller;
 import com.sms.beercatalogue.document.Beer;
 import com.sms.beercatalogue.service.BeerService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +17,21 @@ public class BeerController {
     @GetMapping
     public List<Beer> fetchAllBeers(){
         return beerService.getAllBeers();
+    }
+
+    @PostMapping
+    public void addBeer(@RequestBody Beer beer){
+        beerService.addingBeer(beer);
+    }
+
+    @DeleteMapping(path="{beerName}")
+    public void deleteBeer(@PathVariable("beerName") String beerName){
+        beerService.deleteBeer(beerName);
+    }
+
+    @PutMapping(path="{beerName}")
+    public void updateBeer(@PathVariable("beerName") String beerName,
+                           @RequestBody Beer beer){
+        beerService.updateBeer(beerName, beer);
     }
 }

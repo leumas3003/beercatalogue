@@ -8,6 +8,4 @@ import java.util.Optional;
 public interface BeerRepository extends MongoRepository<Beer, String> {
 
     Optional<Beer> findBeerByBeerName(String beerName);
-
-
 }
